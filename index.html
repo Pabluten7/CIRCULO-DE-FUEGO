@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Círculo de Fuego por Pablo Casal</title>
+    <title>Círculo de Fuego</title>
     <style>
         /* Fondo oscuro para resaltar el fuego */
         body {
@@ -18,9 +18,10 @@
             flex-direction: column;
             align-items: center;
             overflow-x: hidden;
+            position: relative; /* Necesario para posicionar la firma */
         }
 
-        /* Efecto de Anillo de Fuego animado de fondo */
+        /* Efecto de Anillo de Fuego estático de fondo */
         .anillo-fuego {
             position: fixed;
             top: 50%;
@@ -38,30 +39,34 @@
                 0 0 140px 60px #ff0000;
             border: 2px solid rgba(255, 215, 0, 0.3);
             z-index: -1;
-            animation: pulsarFuego 2.5s infinite alternate ease-in-out;
-        }
-
-        @keyframes pulsarFuego {
-            0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.6; }
-            100% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
         }
 
         /* Títulos */
         h1 {
             color: #ff8c00;
             font-size: 3em;
-            margin-bottom: 5px;
+            margin-bottom: 30px;
+            margin-top: 20px;
             text-shadow: 2px 2px 10px #ff0000;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        h2 {
-            color: #ffda75;
-            font-size: 1.2em;
-            margin-top: 0;
-            margin-bottom: 30px;
-            font-weight: normal;
+        /* Firma sutil en la esquina inferior */
+        .firma {
+            position: fixed;
+            bottom: 15px;
+            right: 20px;
+            color: white;
+            font-size: 0.8em;
+            opacity: 0.15; /* Muy poca opacidad */
+            letter-spacing: 1px;
+            pointer-events: none; /* Para que no interfiera con los clics */
+            transition: opacity 0.3s;
+        }
+
+        .firma:hover {
+            opacity: 0.5; /* Se ve un poco más si alguien pasa el ratón por encima (opcional) */
         }
 
         /* Botón de jugar */
@@ -148,7 +153,7 @@
             color: #ddd;
         }
 
-        /* Animaciones */
+        /* Animaciones para la aparición de la carta */
         @keyframes aparecerCarta {
             from { transform: scale(0.5) translateY(50px) rotate(-10deg); opacity: 0; }
             to { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
@@ -166,7 +171,6 @@
     <div class="anillo-fuego"></div>
 
     <h1>Círculo de Fuego</h1>
-    <h2>Por Pablo Casal</h2>
 
     <button onclick="sacarCarta()">🔥 Sacar Carta 🔥</button>
 
@@ -174,8 +178,11 @@
         <!-- Aquí aparecerá la carta y su regla -->
     </div>
 
+    <!-- Firma sutil en la esquina -->
+    <div class="firma">Por Pablo Casal</div>
+
     <script>
-        // 1. Diccionario de reglas (corregido en sintaxis y redacción)
+        // Diccionario de reglas
         const reglasDelJuego = {
             'A': { titulo: '¡Tabú!', texto: 'Prohíbe una palabra para todos; el que la diga, bebe 1 trago.' },
             '2': { titulo: '¡Regla!', texto: 'Se impone una regla; el que la incumpla, bebe 1 trago.' },
@@ -192,7 +199,7 @@
             'K': { titulo: '¡El Rey!', texto: '¡Bebes 2 tragos!' }
         };
 
-        // 2. Crear la baraja
+        // Crear la baraja
         const palos = ['♠', '♥', '♦', '♣'];
         const valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         let baraja = [];
@@ -203,7 +210,7 @@
             }
         }
 
-        // 3. Función para sacar 1 carta y mostrar su regla
+        // Función para sacar 1 carta y mostrar su regla
         function sacarCarta() {
             const areaJuego = document.getElementById('area-juego');
             
@@ -232,7 +239,6 @@
             const divRegla = document.createElement('div');
             divRegla.className = 'tarjeta-regla';
             
-            // Obtener la regla según el valor de la carta
             const regla = reglasDelJuego[cartaElegida.valor];
 
             divRegla.innerHTML = `
