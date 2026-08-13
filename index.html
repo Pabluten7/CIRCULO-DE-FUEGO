@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Círculo de Fuego</title>
     <style>
-        /* Fondo oscuro para resaltar el fuego */
+        /* Fondo oscuro para resaltar el fuego sutil */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0d0d0d;
+            background-color: #050505; /* Un negro casi puro */
             color: white;
             text-align: center;
             padding: 20px;
@@ -21,23 +21,27 @@
             position: relative; /* Necesario para posicionar la firma */
         }
 
-        /* Efecto de Anillo de Fuego estático de fondo */
+        /* Efecto de Anillo de Fuego ESTÁTICO Y SUTIL de fondo */
         .anillo-fuego {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80vw;
-            height: 80vw;
-            max-width: 500px;
-            max-height: 500px;
+            width: 85vw;
+            height: 85vw;
+            max-width: 600px;
+            max-height: 600px;
             border-radius: 50%;
-            /* Sombras múltiples para simular el resplandor del fuego */
+            
+            /* Sombras modificadas para ser mucho más tenues y sutiles */
             box-shadow: 
-                0 0 60px 20px #ff4500, inset 0 0 60px 20px #ff4500, 
-                0 0 100px 40px #ff8c00, inset 0 0 100px 40px #ff8c00,
-                0 0 140px 60px #ff0000;
-            border: 2px solid rgba(255, 215, 0, 0.3);
+                0 0 30px 5px rgba(255, 69, 0, 0.2),   /* Naranja rojizo muy transparente exterior */
+                inset 0 0 30px 5px rgba(255, 69, 0, 0.2), /* Naranja rojizo muy transparente interior */
+                0 0 50px 10px rgba(255, 140, 0, 0.1),  /* Naranja oscuro casi invisible exterior */
+                inset 0 0 50px 10px rgba(255, 140, 0, 0.1); /* Naranja oscuro casi invisible interior */
+            
+            /* Borde apenas perceptible */
+            border: 1px solid rgba(255, 69, 0, 0.05);
             z-index: -1;
         }
 
@@ -45,9 +49,9 @@
         h1 {
             color: #ff8c00;
             font-size: 3em;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             margin-top: 20px;
-            text-shadow: 2px 2px 10px #ff0000;
+            text-shadow: 1px 1px 5px rgba(255, 0, 0, 0.5); /* Sombra de texto más suave */
             text-transform: uppercase;
             letter-spacing: 2px;
         }
@@ -59,39 +63,35 @@
             right: 20px;
             color: white;
             font-size: 0.8em;
-            opacity: 0.15; /* Muy poca opacidad */
+            opacity: 0.12; /* Aún más sutil */
             letter-spacing: 1px;
             pointer-events: none; /* Para que no interfiera con los clics */
             transition: opacity 0.3s;
         }
 
-        .firma:hover {
-            opacity: 0.5; /* Se ve un poco más si alguien pasa el ratón por encima (opcional) */
-        }
-
         /* Botón de jugar */
         button {
-            padding: 15px 30px;
+            padding: 15px 35px;
             font-size: 20px;
-            background: linear-gradient(45deg, #ff4500, #ff0000);
+            background: linear-gradient(45deg, #e63e00, #cc0000); /* Colores un poco menos saturados */
             color: white;
-            border: 2px solid #ffda75;
+            border: 1px solid #ffda75; /* Borde más fino */
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255, 69, 0, 0.5);
+            box-shadow: 0 4px 10px rgba(255, 69, 0, 0.3);
             transition: all 0.3s;
             z-index: 10;
         }
 
         button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(255, 69, 0, 0.8);
+            transform: scale(1.03) translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 69, 0, 0.5);
         }
 
         button:active {
-            transform: scale(0.95);
+            transform: scale(0.97) translateY(1px);
         }
 
         /* Contenedor central (Carta + Regla) */
@@ -99,63 +99,65 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: 30px;
-            min-height: 350px;
+            margin-top: 40px;
+            min-height: 400px;
         }
 
         /* Estilo visual de la carta */
         .carta {
-            width: 120px;
-            height: 180px;
+            width: 140px; /* Un poco más grande para mejor legibilidad */
+            height: 210px;
             background-color: white;
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-            font-size: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            font-size: 48px;
             font-weight: bold;
             animation: aparecerCarta 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
         }
 
-        .carta.rojo { color: #e74c3c; }
-        .carta.negro { color: #111; }
-        .carta .palo { font-size: 50px; line-height: 1; }
+        .carta.rojo { color: #d63031; } /* Rojo más suave */
+        .carta.negro { color: #2d3436; } /* Negro más suave */
+        .carta .palo { font-size: 60px; line-height: 1; margin-top: 5px; }
 
         /* Estilo de la tarjeta de reglas */
         .tarjeta-regla {
-            background: rgba(20, 20, 20, 0.9);
-            border-left: 5px solid #ff8c00;
-            padding: 20px;
+            background: rgba(15, 15, 15, 0.95); /* Más opaco para leer mejor */
+            border-left: 4px solid #ff8c00;
+            padding: 25px;
             border-radius: 8px;
-            max-width: 400px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            animation: aparecerRegla 0.6s ease-out;
-            border-top: 1px solid rgba(255, 140, 0, 0.3);
-            border-right: 1px solid rgba(255, 140, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 140, 0, 0.3);
+            max-width: 450px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+            animation: aparecerRegla 0.5s ease-out;
+            border-top: 1px solid rgba(255, 140, 0, 0.15);
+            border-right: 1px solid rgba(255, 140, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 140, 0, 0.15);
         }
 
         .tarjeta-regla strong {
             color: #ffda75;
-            font-size: 1.3em;
+            font-size: 1.4em;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .tarjeta-regla p {
             margin: 0;
-            font-size: 1.1em;
-            line-height: 1.5;
-            color: #ddd;
+            font-size: 1.15em;
+            line-height: 1.6;
+            color: #e0e0e0;
         }
 
         /* Animaciones para la aparición de la carta */
         @keyframes aparecerCarta {
-            from { transform: scale(0.5) translateY(50px) rotate(-10deg); opacity: 0; }
+            from { transform: scale(0.6) translateY(50px) rotate(-8deg); opacity: 0; }
             to { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
         }
 
@@ -167,7 +169,7 @@
 </head>
 <body>
 
-    <!-- Efecto visual de fondo -->
+    <!-- Efecto visual de fondo (Ahora MUCHO más sutil) -->
     <div class="anillo-fuego"></div>
 
     <h1>Círculo de Fuego</h1>
