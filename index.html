@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sacar Cartas con Repetición</title>
+    <style>
+        /* Estilos generales y fondo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #f1c40f;
+        }
+
+        /* Controles de la interfaz */
+        .controles {
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2ecc71;
+        }
+
+        /* Cuadrícula donde aparecen las cartas */
+        .mesa-cartas {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Estilo visual de la carta */
+        .carta {
+            width: 80px;
+            height: 120px;
+            background-color: white;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            font-size: 24px;
+            font-weight: bold;
+            animation: aparecer 0.3s ease-out;
+        }
+
+        /* Colores según el palo */
+        .carta.rojo { color: #e74c3c; }
+        .carta.negro { color: #2c3e50; }
+
+        .carta .palo { font-size: 32px; }
+
+        /* Animación sencilla al aparecer */
+        @keyframes aparecer {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Extractor de Cartas</h1>
+    <p>Las cartas se sacan <strong>CON reposición</strong> (una misma carta puede volver a salir).</p>
+
+    <div class="controles">
+        <label for="cantidad">¿Cuántas cartas sacar? </label>
+        <input type="number" id="cantidad" value="5" min="1" max="100">
+        <button onclick="sacarCartas()">Sacar Cartas</button>
+    </div>
+
+    <div id="mesa" class="mesa-cartas">
+        <!-- Las cartas aparecerán aquí -->
+    </div>
+
+    <script>
+        // 1. Crear la baraja en JavaScript
+        const palos = ['♠', '♥', '♦', '♣'];
+        const valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        let baraja = [];
+
+        // Llenamos el array combinando cada valor con cada palo
+        for (let palo of palos) {
+            for (let valor of valores) {
+                baraja.push({ valor: valor, palo: palo });
+            }
+        }
+
+        // 2. Función que se ejecuta al pulsar el botón
+        function sacarCartas() {
+            const cantidad = document.getElementById('cantidad').value;
+            const mesa = document.getElementById('mesa');
+            
+            // Limpiar la mesa de la tirada anterior
+            mesa.innerHTML = '';
+
+            // Sacar tantas cartas como haya pedido el usuario
+            for (let i = 0; i < cantidad; i++) {
+                // Generar un número aleatorio entre 0 y 51
+                // Al no borrar el elemento del array, la carta puede repetirse en el siguiente ciclo
+                const indiceAleatorio = Math.floor(Math.random() * baraja.length);
+                const cartaElegida = baraja[indiceAleatorio];
+
+                // Crear el elemento visual de la carta (HTML)
+                const divCarta = document.createElement('div');
+                
+                // Determinar si es roja o negra para aplicar el CSS correcto
+                if (cartaElegida.palo === '♥' || cartaElegida.palo === '♦') {
+                    divCarta.className = 'carta rojo';
+                } else {
+                    divCarta.className = 'carta negro';
+                }
+
+                // Inyectar el valor y el palo en la carta
+                divCarta.innerHTML = `
+                    <span class="valor">${cartaElegida.valor}</span>
+                    <span class="palo">${cartaElegida.palo}</span>
+                `;
+
+                // Añadir la carta a la mesa
+                mesa.appendChild(divCarta);
+            }
+        }
+    </script>
+
+</body>
+</html>
