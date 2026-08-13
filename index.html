@@ -3,158 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sacar Cartas con Repetición</title>
+    <title>Círculo de Fuego por Pablo Casal</title>
     <style>
-        /* Estilos generales y fondo */
+        /* Fondo oscuro para resaltar el fuego */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2c3e50;
+            background-color: #0d0d0d;
             color: white;
             text-align: center;
             padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
         }
 
+        /* Efecto de Anillo de Fuego animado de fondo */
+        .anillo-fuego {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vw;
+            max-width: 500px;
+            max-height: 500px;
+            border-radius: 50%;
+            /* Sombras múltiples para simular el resplandor del fuego */
+            box-shadow: 
+                0 0 60px 20px #ff4500, inset 0 0 60px 20px #ff4500, 
+                0 0 100px 40px #ff8c00, inset 0 0 100px 40px #ff8c00,
+                0 0 140px 60px #ff0000;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            z-index: -1;
+            animation: pulsarFuego 2.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulsarFuego {
+            0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.6; }
+            100% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+        }
+
+        /* Títulos */
         h1 {
-            color: #f1c40f;
+            color: #ff8c00;
+            font-size: 3em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 10px #ff0000;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        /* Controles de la interfaz */
-        .controles {
-            margin: 20px 0;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 10px;
-            display: inline-block;
+        h2 {
+            color: #ffda75;
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-weight: normal;
         }
 
-        input {
-            padding: 10px;
-            font-size: 16px;
-            width: 80px;
-            text-align: center;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
+        /* Botón de jugar */
         button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #27ae60;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #ff4500, #ff0000);
             color: white;
-            border: none;
-            border-radius: 5px;
+            border: 2px solid #ffda75;
+            border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.3s;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 69, 0, 0.5);
+            transition: all 0.3s;
+            z-index: 10;
         }
 
         button:hover {
-            background-color: #2ecc71;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 69, 0, 0.8);
         }
 
-        /* Cuadrícula donde aparecen las cartas */
-        .mesa-cartas {
+        button:active {
+            transform: scale(0.95);
+        }
+
+        /* Contenedor central (Carta + Regla) */
+        .area-juego {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
+            flex-direction: column;
+            align-items: center;
             margin-top: 30px;
+            min-height: 350px;
         }
 
         /* Estilo visual de la carta */
         .carta {
-            width: 80px;
-            height: 120px;
+            width: 120px;
+            height: 180px;
             background-color: white;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            font-size: 24px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8);
+            font-size: 40px;
             font-weight: bold;
-            animation: aparecer 0.3s ease-out;
+            animation: aparecerCarta 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-bottom: 25px;
         }
 
-        /* Colores según el palo */
         .carta.rojo { color: #e74c3c; }
-        .carta.negro { color: #2c3e50; }
+        .carta.negro { color: #111; }
+        .carta .palo { font-size: 50px; line-height: 1; }
 
-        .carta .palo { font-size: 32px; }
+        /* Estilo de la tarjeta de reglas */
+        .tarjeta-regla {
+            background: rgba(20, 20, 20, 0.9);
+            border-left: 5px solid #ff8c00;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            animation: aparecerRegla 0.6s ease-out;
+            border-top: 1px solid rgba(255, 140, 0, 0.3);
+            border-right: 1px solid rgba(255, 140, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 140, 0, 0.3);
+        }
 
-        /* Animación sencilla al aparecer */
-        @keyframes aparecer {
-            from { transform: translateY(-20px); opacity: 0; }
+        .tarjeta-regla strong {
+            color: #ffda75;
+            font-size: 1.3em;
+            display: block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .tarjeta-regla p {
+            margin: 0;
+            font-size: 1.1em;
+            line-height: 1.5;
+            color: #ddd;
+        }
+
+        /* Animaciones */
+        @keyframes aparecerCarta {
+            from { transform: scale(0.5) translateY(50px) rotate(-10deg); opacity: 0; }
+            to { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes aparecerRegla {
+            from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
 
-    <h1>Extractor de Cartas</h1>
-    <p>Las cartas se sacan <strong>CON reposición</strong> (una misma carta puede volver a salir).</p>
+    <!-- Efecto visual de fondo -->
+    <div class="anillo-fuego"></div>
 
-    <div class="controles">
-        <label for="cantidad">¿Cuántas cartas sacar? </label>
-        <input type="number" id="cantidad" value="5" min="1" max="100">
-        <button onclick="sacarCartas()">Sacar Cartas</button>
-    </div>
+    <h1>Círculo de Fuego</h1>
+    <h2>Por Pablo Casal</h2>
 
-    <div id="mesa" class="mesa-cartas">
-        <!-- Las cartas aparecerán aquí -->
+    <button onclick="sacarCarta()">🔥 Sacar Carta 🔥</button>
+
+    <div class="area-juego" id="area-juego">
+        <!-- Aquí aparecerá la carta y su regla -->
     </div>
 
     <script>
-        // 1. Crear la baraja en JavaScript
+        // 1. Diccionario de reglas (corregido en sintaxis y redacción)
+        const reglasDelJuego = {
+            'A': { titulo: '¡Tabú!', texto: 'Prohíbe una palabra para todos; el que la diga, bebe 1 trago.' },
+            '2': { titulo: '¡Regla!', texto: 'Se impone una regla; el que la incumpla, bebe 1 trago.' },
+            '3': { titulo: '¡Rima!', texto: 'Di una palabra. En orden, los demás deben decir una palabra que rime. El primero que falle, bebe 1 trago.' },
+            '4': { titulo: '¡Cupido!', texto: 'Elige una pareja. Si uno de los dos bebe, el otro también.' },
+            '5': { titulo: '¡Gnomo!', texto: 'Quítalo de tu vaso antes de beber y colócalo de nuevo al acabar.' },
+            '6': { titulo: '¡Marcas!', texto: 'Di una categoría. En orden, se deben decir marcas de esa categoría. El que falle, bebe 1 trago.' },
+            '7': { titulo: '¡Cascada!', texto: 'Empiezas a beber y todos te siguen. Solo puedes parar de beber cuando el jugador de tu derecha lo haga, empezando por ti.' },
+            '8': { titulo: '¡A repartir!', texto: '¡Repartes 3 tragos como tú quieras!' },
+            '9': { titulo: '¡A repartir!', texto: '¡Repartes 9 tragos como tú quieras!' },
+            '10': { titulo: '¡Director de orquesta!', texto: 'Realiza una acción discreta; el resto debe darse cuenta e imitarla. El último en hacerlo, bebe 1 trago.' },
+            'J': { titulo: '¡Cantar!', texto: 'Empieza una canción. En orden, los demás la siguen a cachos. El que falle bebe 1 trago, y si llegan al final, ¡TODOS acaban sus vasos!' },
+            'Q': { titulo: '¡Instagram!', texto: 'Like a una historia aleatoria.' },
+            'K': { titulo: '¡El Rey!', texto: '¡Bebes 2 tragos!' }
+        };
+
+        // 2. Crear la baraja
         const palos = ['♠', '♥', '♦', '♣'];
         const valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
         let baraja = [];
 
-        // Llenamos el array combinando cada valor con cada palo
         for (let palo of palos) {
             for (let valor of valores) {
                 baraja.push({ valor: valor, palo: palo });
             }
         }
 
-        // 2. Función que se ejecuta al pulsar el botón
-        function sacarCartas() {
-            const cantidad = document.getElementById('cantidad').value;
-            const mesa = document.getElementById('mesa');
+        // 3. Función para sacar 1 carta y mostrar su regla
+        function sacarCarta() {
+            const areaJuego = document.getElementById('area-juego');
             
-            // Limpiar la mesa de la tirada anterior
-            mesa.innerHTML = '';
+            // Limpiar la jugada anterior
+            areaJuego.innerHTML = '';
 
-            // Sacar tantas cartas como haya pedido el usuario
-            for (let i = 0; i < cantidad; i++) {
-                // Generar un número aleatorio entre 0 y 51
-                // Al no borrar el elemento del array, la carta puede repetirse en el siguiente ciclo
-                const indiceAleatorio = Math.floor(Math.random() * baraja.length);
-                const cartaElegida = baraja[indiceAleatorio];
+            // Sacar 1 carta al azar (con reposición)
+            const indiceAleatorio = Math.floor(Math.random() * baraja.length);
+            const cartaElegida = baraja[indiceAleatorio];
 
-                // Crear el elemento visual de la carta (HTML)
-                const divCarta = document.createElement('div');
-                
-                // Determinar si es roja o negra para aplicar el CSS correcto
-                if (cartaElegida.palo === '♥' || cartaElegida.palo === '♦') {
-                    divCarta.className = 'carta rojo';
-                } else {
-                    divCarta.className = 'carta negro';
-                }
-
-                // Inyectar el valor y el palo en la carta
-                divCarta.innerHTML = `
-                    <span class="valor">${cartaElegida.valor}</span>
-                    <span class="palo">${cartaElegida.palo}</span>
-                `;
-
-                // Añadir la carta a la mesa
-                mesa.appendChild(divCarta);
+            // ==== CREAR LA CARTA VISUAL ====
+            const divCarta = document.createElement('div');
+            
+            if (cartaElegida.palo === '♥' || cartaElegida.palo === '♦') {
+                divCarta.className = 'carta rojo';
+            } else {
+                divCarta.className = 'carta negro';
             }
+
+            divCarta.innerHTML = `
+                <span class="valor">${cartaElegida.valor}</span>
+                <span class="palo">${cartaElegida.palo}</span>
+            `;
+
+            // ==== CREAR LA TARJETA DE REGLA ====
+            const divRegla = document.createElement('div');
+            divRegla.className = 'tarjeta-regla';
+            
+            // Obtener la regla según el valor de la carta
+            const regla = reglasDelJuego[cartaElegida.valor];
+
+            divRegla.innerHTML = `
+                <strong>${regla.titulo}</strong>
+                <p>${regla.texto}</p>
+            `;
+
+            // Añadir ambos elementos al área de juego
+            areaJuego.appendChild(divCarta);
+            areaJuego.appendChild(divRegla);
         }
     </script>
-
 </body>
 </html>
